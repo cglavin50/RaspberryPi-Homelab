@@ -1,0 +1,36 @@
+services:
+  caddy:
+    image: caddy:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+  adguard_home:
+    image: adguard/adguardhome:latest
+    container_name: adguard_home
+    networks:
+      - dns_net
+    ports:
+      - 3000:3000 # web ui
+      - 53:53/tcp
+      - 53:53/udp
+    volumes:
+      - adguard_config:/opt/adguardhome
+    environment:
+      - TZ=America/New_York
+    restart: unless-stopped
+
+networks:
+  network_tools:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:
+  adguard_config:
