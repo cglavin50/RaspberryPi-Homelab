@@ -1,7 +1,9 @@
 services:
   caddy:
     image: caddy:latest
-    restart: unless-stopped
+    container_name: caddy
+    networks:
+      - network_tools
     ports:
       - "80:80"
       - "443:443"
@@ -11,11 +13,13 @@ services:
       - ./site:/srv
       - caddy_data:/data
       - caddy_config:/config
+    restart: unless-stopped
+
   adguard_home:
     image: adguard/adguardhome:latest
     container_name: adguard_home
     networks:
-      - dns_net
+      - network_tools
     ports:
       - 3000:3000 # web ui
       - 53:53/tcp
